@@ -7,23 +7,22 @@
  * Beklenen: TUM TESTLER FAIL EDECEK (import hatasi - modul yok)
  */
 
-import { LoggerService } from '../../src/services/logger.service';
 import { LogEntry, LogQuery } from '../../src/interfaces/ILoggerService';
 
-// MongoDB model mock
-const mockLogModel = {
-  create: jest.fn(),
-  find: jest.fn().mockReturnThis(),
-  countDocuments: jest.fn(),
-  sort: jest.fn().mockReturnThis(),
-  skip: jest.fn().mockReturnThis(),
-  limit: jest.fn().mockReturnThis(),
-  lean: jest.fn(),
-};
-
 jest.mock('../../src/models/log.model', () => ({
-  LogModel: mockLogModel,
+  LogModel: {
+    create: jest.fn(),
+    find: jest.fn().mockReturnThis(),
+    countDocuments: jest.fn(),
+    sort: jest.fn().mockReturnThis(),
+    skip: jest.fn().mockReturnThis(),
+    limit: jest.fn().mockReturnThis(),
+    lean: jest.fn(),
+  },
 }));
+
+import { LoggerService } from '../../src/services/logger.service';
+const { LogModel: mockLogModel } = require('../../src/models/log.model');
 
 describe('LoggerService', () => {
   let loggerService: LoggerService;
