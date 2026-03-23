@@ -2,7 +2,8 @@ import request from 'supertest';
 import { Application } from 'express';
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { createApp } from '../../src/app';
+import { createApp } from '../../../src/app';
+
 
 let mongoServer: MongoMemoryServer;
 let app: Application;

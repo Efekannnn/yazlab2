@@ -29,23 +29,3 @@ export interface IOrderService {
   updateOrder(orderId: string, userId: string, role: string, dto: UpdateOrderDTO): Promise<OrderResult>;
   deleteOrder(orderId: string, userId: string, role: string): Promise<void>;
 }
-```
-
----
-
-**📄 `order-service/.env.example`**
-```
-PORT=3003
-MONGODB_URI=mongodb://order-mongo:27017/order-db
-PRODUCT_SERVICE_URL=http://product-service:3002
-NODE_ENV=development
-```
-
----
-
-**📄 `order-service/.gitignore`**
-```
-node_modules/
-dist/
-coverage/
-.env
