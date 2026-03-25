@@ -35,7 +35,7 @@ export function createAuthMiddleware(secret: string) {
       return;
     }
 
-    (req as Record<string, unknown>).user = result.payload;
+    (req as unknown as { user: typeof result.payload }).user = result.payload;
     req.headers['x-user-id'] = result.payload.sub;
     req.headers['x-user-email'] = result.payload.email;
     req.headers['x-user-role'] = result.payload.role;
