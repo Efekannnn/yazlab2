@@ -1,5 +1,11 @@
-import { ILoggerService, LogEntry, LogQuery, PaginatedLogs } from '../interfaces/ILoggerService';
+import { ILoggerService, LogEntry, LogLevel, LogQuery, PaginatedLogs } from '../interfaces/ILoggerService';
 import { LogModel } from '../models/log.model';
+
+interface LogFilter {
+  level?: LogLevel;
+  targetService?: string;
+  timestamp?: { $gte?: Date; $lte?: Date };
+}
 
 export class LoggerService implements ILoggerService {
   async log(entry: LogEntry): Promise<void> {
@@ -15,7 +21,7 @@ export class LoggerService implements ILoggerService {
     const limit = filter.limit || 20;
     const skip = (page - 1) * limit;
 
-    const where: Record<string, any> = {};
+    const where: LogFilter = {};
 
     if (filter.level) {
       where.level = filter.level;

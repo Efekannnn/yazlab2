@@ -3,6 +3,11 @@ import axios from 'axios';
 import { IProxyService, ServiceTarget, ProxyResult } from '../interfaces/IProxyService';
 import { config } from '../config';
 
+interface AxiosLikeError {
+  response?: { status: number; data: unknown };
+  code?: string;
+}
+
 export class ProxyService implements IProxyService {
   private routeMap: { prefix: string; target: ServiceTarget }[];
 
@@ -47,7 +52,7 @@ export class ProxyService implements IProxyService {
         headers: response.headers as Record<string, string>,
       };
     } catch (error: unknown) {
-      const axiosError = error as { response?: { status: number; data: unknown }; code?: string };
+      const axiosError = error as AxiosLikeError;
       if (axiosError.response) {
         return {
           status: axiosError.response.status,
