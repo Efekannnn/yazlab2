@@ -1,19 +1,29 @@
 import jwt from 'jsonwebtoken';
 import { IAuthService, JwtPayload, TokenVerificationResult } from '../interfaces/IAuthService';
 
+type ExactRoute = { method: string; pattern: string };
+type PrefixRoute = { method: string; prefix: string };
+type RouteRule = ExactRoute | PrefixRoute;
+
+const PUBLIC_ROUTES: RouteRule[] = [
+  { method: 'POST', pattern: '/api/auth/login' },
+  { method: 'POST', pattern: '/api/auth/register' },
+  { method: 'GET', prefix: '/api/products' },
+  { method: 'GET', pattern: '/api/health' },
+];
+
+const ADMIN_ROUTES: ExactRoute[] = [
+  { method: 'GET', pattern: '/api/logs' },
+];
+
+function matchesRoute(rule: RouteRule, method: string, path: string): boolean {
+  if (rule.method !== method) return false;
+  if ('pattern' in rule) return path === rule.pattern;
+  return path.startsWith(rule.prefix);
+}
+
 export class AuthService implements IAuthService {
-  private secret: string;
-
-  private publicRoutes = [
-    { method: 'POST', pattern: '/api/auth/login' },
-    { method: 'POST', pattern: '/api/auth/register' },
-    { method: 'GET', prefix: '/api/products' },
-    { method: 'GET', pattern: '/api/health' },
-  ];
-
-  private adminRoutes = [
-    { method: 'GET', pattern: '/api/logs' },
-  ];
+  private readonly secret: string;
 
   constructor(secret: string) {
     this.secret = secret;
@@ -23,7 +33,6 @@ export class AuthService implements IAuthService {
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return null;
     }
-
     const token = authHeader.slice(7);
     return token.length > 0 ? token : null;
   }
@@ -32,7 +41,6 @@ export class AuthService implements IAuthService {
     if (!token) {
       return { valid: false, error: 'Token is empty' };
     }
-
     try {
       const decoded = jwt.verify(token, this.secret) as JwtPayload;
       return { valid: true, payload: decoded };
@@ -43,17 +51,10 @@ export class AuthService implements IAuthService {
   }
 
   isPublicRoute(method: string, path: string): boolean {
-    return this.publicRoutes.some((route) => {
-      if (route.method !== method) return false;
-      if ('pattern' in route && route.pattern) return path === route.pattern;
-      if ('prefix' in route && route.prefix) return path.startsWith(route.prefix);
-      return false;
-    });
+    return PUBLIC_ROUTES.some((rule) => matchesRoute(rule, method, path));
   }
 
   isAdminRoute(method: string, path: string): boolean {
-    return this.adminRoutes.some((route) => {
-      return route.method === method && path.startsWith(route.pattern);
-    });
+    return ADMIN_ROUTES.some((rule) => matchesRoute(rule, method, path));
   }
 }
