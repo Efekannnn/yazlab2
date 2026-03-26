@@ -1,12 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
+import { AppError } from '../interfaces/IErrorHandler';
 
 const NETWORK_ERROR_CODES = new Set(['ECONNREFUSED', 'ETIMEDOUT', 'ECONNRESET', 'EHOSTUNREACH']);
-
-interface AppError {
-  status?: number;
-  code?: string;
-  message?: string;
-}
 
 export function errorHandler(
   err: AppError,

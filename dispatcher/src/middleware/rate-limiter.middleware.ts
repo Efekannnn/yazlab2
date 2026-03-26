@@ -1,16 +1,18 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
-
-interface RateLimiterOptions {
-  limit: number;
-  windowMs: number;
-}
+import { RateLimiterOptions } from '../interfaces/IRateLimiter';
+import { config } from '../config';
 
 interface IpRecord {
   count: number;
   resetAt: number;
 }
 
-export function createRateLimiter(options: RateLimiterOptions): RequestHandler {
+const DEFAULT_OPTIONS: RateLimiterOptions = {
+  limit: config.rateLimit.max,
+  windowMs: config.rateLimit.windowMs,
+};
+
+export function createRateLimiter(options: RateLimiterOptions = DEFAULT_OPTIONS): RequestHandler {
   const { limit, windowMs } = options;
   const store = new Map<string, IpRecord>();
 
