@@ -14,6 +14,7 @@ export class ProxyService implements IProxyService {
   constructor() {
     this.routeMap = [
       { prefix: '/api/auth', target: config.services.auth },
+      { prefix: '/api/logs', target: config.services.auth },
       { prefix: '/api/products', target: config.services.product },
       { prefix: '/api/orders', target: config.services.order },
     ];

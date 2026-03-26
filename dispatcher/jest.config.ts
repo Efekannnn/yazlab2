@@ -25,6 +25,7 @@ const config: Config = {
   },
   clearMocks: true,
   verbose: true,
+  setupFiles: ['<rootDir>/tests/setup.ts'],
 };
 
 export default config;

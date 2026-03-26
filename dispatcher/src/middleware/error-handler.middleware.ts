@@ -17,6 +17,10 @@ export function errorHandler(
   const status = err.status && err.status >= 400 && err.status !== 200 ? err.status : 500;
 
   if (status >= 500) {
+    if (err.code && err.status && err.status !== 500) {
+      res.status(status).json({ error: { code: err.code, message: err.message ?? 'Service error' } });
+      return;
+    }
     res.status(500).json({ error: { code: 'INTERNAL_SERVER_ERROR', message: 'An unexpected error occurred' } });
     return;
   }
