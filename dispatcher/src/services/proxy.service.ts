@@ -20,11 +20,16 @@ export class ProxyService implements IProxyService {
     ];
   }
 
+  /** İstek path'ine göre hedef servisi döner. Eşleşme yoksa null. */
   resolveTarget(path: string): ServiceTarget | null {
     const match = this.routeMap.find((route) => path.startsWith(route.prefix));
     return match ? { ...match.target } : null;
   }
 
+  /**
+   * Gelen isteği hedef servise iletir. Downstream 4xx/5xx dönerse
+   * hata fırlatmaz, status + data ile döner. Bağlantı yoksa Error fırlatır.
+   */
   async forward(req: Request, targetService: ServiceTarget): Promise<ProxyResult> {
     const url = `${targetService.url}${req.path}`;
 

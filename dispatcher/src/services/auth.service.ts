@@ -37,6 +37,7 @@ export class AuthService implements IAuthService {
     return token.length > 0 ? token : null;
   }
 
+  /** JWT'yi doğrular. Geçerliyse payload, değilse error mesajı döner. */
   verifyToken(token: string): TokenVerificationResult {
     if (!token) {
       return { valid: false, error: 'Token is empty' };

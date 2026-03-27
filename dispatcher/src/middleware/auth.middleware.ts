@@ -1,6 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { AuthService } from '../services/auth.service';
 
+/**
+ * JWT secret alarak auth middleware döner.
+ * Public route → geçer. Token eksik/geçersiz → 401. Admin route + user rolü → 403.
+ * Geçerli token'daki payload, downstream'e x-user-* header'ları ile iletilir.
+ */
 export function createAuthMiddleware(secret: string) {
   const authService = new AuthService(secret);
 
