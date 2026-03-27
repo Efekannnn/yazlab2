@@ -22,8 +22,10 @@ export interface PaginatedProducts {
   totalPages: number;
 }
 
+export type CreateProductData = Omit<Product, 'id' | 'createdAt' | 'updatedAt'>;
+
 export interface IProductService {
-  create(data: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>): Promise<Product>;
+  create(data: CreateProductData): Promise<Product>;
   findById(id: string): Promise<Product | null>;
   findAll(query: ProductQuery): Promise<PaginatedProducts>;
   update(id: string, data: Partial<Product>): Promise<Product | null>;

@@ -1,5 +1,10 @@
-import { IProductService, Product, ProductQuery, PaginatedProducts } from '../interfaces/IProductService';
+import { IProductService, Product, CreateProductData, ProductQuery, PaginatedProducts } from '../interfaces/IProductService';
 import { ProductModel, ProductDocument } from '../models/product.model';
+import { config } from '../config';
+
+interface ProductFilter {
+  category?: string;
+}
 
 function toProduct(doc: ProductDocument): Product {
   return {
@@ -15,7 +20,7 @@ function toProduct(doc: ProductDocument): Product {
 }
 
 export class ProductService implements IProductService {
-  async create(data: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>): Promise<Product> {
+  async create(data: CreateProductData): Promise<Product> {
     if (data.price <= 0) {
       throw new Error('Fiyat sifirdan buyuk olmali');
     }
@@ -34,10 +39,10 @@ export class ProductService implements IProductService {
 
   async findAll(query: ProductQuery): Promise<PaginatedProducts> {
     const page = query.page || 1;
-    const limit = query.limit || 20;
+    const limit = query.limit || config.pagination.defaultLimit;
     const skip = (page - 1) * limit;
 
-    const filter: Record<string, unknown> = {};
+    const filter: ProductFilter = {};
     if (query.category) {
       filter.category = query.category;
     }
