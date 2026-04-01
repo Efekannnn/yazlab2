@@ -15,6 +15,10 @@ const proxyService = new ProxyService();
 app.use(express.json());
 app.use(createLoggerMiddleware(loggerService));
 
+app.get('/api/health', (_req, res) => {
+  res.status(200).json({ status: 'ok', service: 'dispatcher' });
+});
+
 // Bilinmeyen route: auth'dan once 404 don
 app.use((req: Request, _res: Response, next: NextFunction) => {
   if (!proxyService.resolveTarget(req.path)) {
