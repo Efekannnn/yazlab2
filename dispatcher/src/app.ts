@@ -1,4 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
+import client from 'prom-client';
 import { createAuthMiddleware } from './middleware/auth.middleware';
 import { createLoggerMiddleware } from './middleware/logger.middleware';
 import { createRateLimiter } from './middleware/rate-limiter.middleware';
@@ -7,6 +8,8 @@ import proxyRoutes from './routes/proxy.routes';
 import { LoggerService } from './services/logger.service';
 import { ProxyService } from './services/proxy.service';
 import { config } from './config';
+
+client.collectDefaultMetrics({ prefix: 'dispatcher_' });
 
 const app = express();
 const loggerService = new LoggerService();
@@ -17,6 +20,11 @@ app.use(createLoggerMiddleware(loggerService));
 
 app.get('/api/health', (_req, res) => {
   res.status(200).json({ status: 'ok', service: 'dispatcher' });
+});
+
+app.get('/metrics', async (_req, res) => {
+  res.set('Content-Type', client.register.contentType);
+  res.end(await client.register.metrics());
 });
 
 // Bilinmeyen route: auth'dan once 404 don

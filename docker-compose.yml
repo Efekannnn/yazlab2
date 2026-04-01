@@ -103,6 +103,33 @@ services:
       retries: 3
     restart: unless-stopped
 
+  # ── Monitoring ───────────────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - backend-network
+      - frontend-network
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3006:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      - prometheus
+    networks:
+      - frontend-network
+    restart: unless-stopped
+
   # ── MongoDB Instances (izole) ─────────────────────────────────────────────
   dispatcher-db:
     image: mongo:7-jammy
