@@ -4,6 +4,7 @@ import { createAuthMiddleware } from './middleware/auth.middleware';
 import { createLoggerMiddleware } from './middleware/logger.middleware';
 import { createRateLimiter } from './middleware/rate-limiter.middleware';
 import { errorHandler } from './middleware/error-handler.middleware';
+import { createMetricsMiddleware } from './middleware/metrics.middleware';
 import proxyRoutes from './routes/proxy.routes';
 import { LoggerService } from './services/logger.service';
 import { ProxyService } from './services/proxy.service';
@@ -16,6 +17,7 @@ const loggerService = new LoggerService();
 const proxyService = new ProxyService();
 
 app.use(express.json());
+app.use(createMetricsMiddleware());
 app.use(createLoggerMiddleware(loggerService));
 
 app.get('/api/health', (_req, res) => {
