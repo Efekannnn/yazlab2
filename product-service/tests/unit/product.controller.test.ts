@@ -43,6 +43,52 @@ describe('ProductController', () => {
     jest.clearAllMocks();
   });
 
+  // ================================================
+  // RMM Seviye 3 — HATEOAS _links kontrolu
+  // ================================================
+
+  describe('HATEOAS _links', () => {
+    it('getById response _links objesi icermeli', async () => {
+      mockService.findById.mockResolvedValue(mockProduct);
+      const req = { params: { id: 'prod-1' } } as unknown as Request;
+      const { res, json } = mockRes();
+
+      await controller.getById(req, res);
+
+      const response = json.mock.calls[0][0];
+      expect(response._links).toBeDefined();
+      expect(response._links.self.href).toContain('prod-1');
+      expect(response._links.update.method).toBe('PUT');
+      expect(response._links.delete.method).toBe('DELETE');
+    });
+
+    it('create response _links objesi icermeli', async () => {
+      mockService.create.mockResolvedValue(mockProduct);
+      const req = {
+        body: { name: 'Test', description: 'Desc', price: 99.99, stock: 10, category: 'A' },
+      } as unknown as Request;
+      const { res, json } = mockRes();
+
+      await controller.create(req, res);
+
+      const response = json.mock.calls[0][0];
+      expect(response._links).toBeDefined();
+      expect(response._links.self).toBeDefined();
+    });
+
+    it('getAll response _links objesi icermeli', async () => {
+      mockService.findAll.mockResolvedValue(mockPaginated);
+      const req = { query: {} } as Request;
+      const { res, json } = mockRes();
+
+      await controller.getAll(req, res);
+
+      const response = json.mock.calls[0][0];
+      expect(response._links).toBeDefined();
+      expect(response._links.self.href).toBe('/api/products');
+    });
+  });
+
   describe('GET /api/products - getAll', () => {
     it('200 ve urun listesi donmeli', async () => {
       mockService.findAll.mockResolvedValue(mockPaginated);
