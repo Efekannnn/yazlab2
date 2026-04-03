@@ -1,5 +1,18 @@
 import { Request, Response } from 'express';
-import { IProductService } from '../interfaces/IProductService';
+import { IProductService, Product } from '../interfaces/IProductService';
+
+function withLinks(product: Product): object {
+  const id = product.id;
+  return {
+    ...product,
+    _links: {
+      self:   { href: `/api/products/${id}`, method: 'GET' },
+      update: { href: `/api/products/${id}`, method: 'PUT' },
+      delete: { href: `/api/products/${id}`, method: 'DELETE' },
+      all:    { href: '/api/products', method: 'GET' },
+    },
+  };
+}
 
 export class ProductController {
   constructor(private readonly productService: IProductService) {}
@@ -10,7 +23,14 @@ export class ProductController {
     const category = req.query.category as string | undefined;
 
     const result = await this.productService.findAll({ page, limit, category });
-    res.status(200).json(result);
+    res.status(200).json({
+      ...result,
+      products: result.products.map(withLinks),
+      _links: {
+        self:   { href: '/api/products', method: 'GET' },
+        create: { href: '/api/products', method: 'POST' },
+      },
+    });
   }
 
   async getById(req: Request, res: Response): Promise<void> {
@@ -21,7 +41,7 @@ export class ProductController {
       return;
     }
 
-    res.status(200).json(product);
+    res.status(200).json(withLinks(product));
   }
 
   async create(req: Request, res: Response): Promise<void> {
@@ -33,7 +53,7 @@ export class ProductController {
     }
 
     const product = await this.productService.create({ name, description, price, stock, category });
-    res.status(201).json(product);
+    res.status(201).json(withLinks(product));
   }
 
   async update(req: Request, res: Response): Promise<void> {
@@ -44,7 +64,7 @@ export class ProductController {
       return;
     }
 
-    res.status(200).json(product);
+    res.status(200).json(withLinks(product));
   }
 
   async remove(req: Request, res: Response): Promise<void> {
