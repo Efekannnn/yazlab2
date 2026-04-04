@@ -56,3 +56,9 @@ export default function (data) {
 
   sleep(1);
 }
+
+export function handleSummary(data) {
+  return {
+    './load-tests/results/smoke-summary.json': JSON.stringify(data, null, 2),
+  };
+}

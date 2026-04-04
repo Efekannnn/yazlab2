@@ -22,6 +22,7 @@ services:
       PRODUCT_SERVICE_URL: http://product-service:3002
       ORDER_SERVICE_URL: http://order-service:3003
       DISPATCHER_MONGO_URI: mongodb://dispatcher-db:27017/dispatcher_db
+      RATE_LIMIT_MAX: "10000"
     depends_on:
       dispatcher-db:
         condition: service_healthy

@@ -23,12 +23,25 @@ export const options = {
 const BASE_URL = 'http://localhost:3000';
 
 export function setup() {
-  const res = http.post(
+  let res = http.post(
     `${BASE_URL}/api/auth/register`,
     JSON.stringify({ email: 'loadtest@test.com', password: 'Password123!' }),
     { headers: { 'Content-Type': 'application/json' } }
   );
+  if (res.status === 409 || !res.json('token')) {
+    res = http.post(
+      `${BASE_URL}/api/auth/login`,
+      JSON.stringify({ email: 'loadtest@test.com', password: 'Password123!' }),
+      { headers: { 'Content-Type': 'application/json' } }
+    );
+  }
   return { token: res.json('token') };
+}
+
+export function handleSummary(data) {
+  return {
+    './load-tests/results/load-summary.json': JSON.stringify(data, null, 2),
+  };
 }
 
 export default function (data) {
