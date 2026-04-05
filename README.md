@@ -6,7 +6,7 @@
 | | |
 |---|---|
 | **Proje Adi** | Mikroservis Tabanli E-Ticaret Sistemi |
-| **Ekip Uyeleri** | Efekannnn (Gelistirici 1 — Dispatcher + Product Service), Kerem Unal (Gelistirici 2 — Auth + Order Service) |
+| **Ekip Uyeleri** | Efekan Tosmak (Gelistirici 1 — Dispatcher + Product Service), Kerem Unal (Gelistirici 2 — Auth + Order Service) |
 | **Tarih** | Nisan 2026 |
 | **Branch** | `integration` |
 
