@@ -135,7 +135,7 @@ graph LR
 
 **Public Rotalar** (token gerekmez): `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/health`, `GET /api/products`, `GET /api/products/:id`
 
-**Admin Rotalar**: `POST /api/products`, `PUT /api/products/:id`, `DELETE /api/products/:id`, `DELETE /api/orders/:id`
+**Admin Rotalar**: `GET /api/logs`
 
 ### 3.3 Sinif Diyagrami
 
@@ -435,7 +435,7 @@ graph LR
 | Order Olustur 201 | 3,006/3,326 (320 hata) | - | Kismi |
 | Orders Listele 200 | 2,917/3,326 (409 hata) | - | Kismi |
 
-> **Not:** Hatalar veritabaninda birikmis veri ve siparis sorgularindaki pagination eksikliginden kaynaklanmistir. `OrderModel.find().limit(50)` ile duzeltilmistir.
+> **Not:** 200 VU altinda Order Service heap limitine ulasmis ve gecici olarak yanit veremez hale gelmistir. `restart: unless-stopped` politikasi ile otomatik toparlanmistir. Product listesi %100 basariyla yanit vermistir.
 
 ---
 
