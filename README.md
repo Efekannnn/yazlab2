@@ -1,12 +1,12 @@
 # Mikroservis Tabanli E-Ticaret Sistemi
 
-**Kocaeli Universitesi â Teknoloji Fakultesi â Bilisim Sistemleri Muhendisligi**  
-**Yazilim Gelistirme Laboratuvari II â Proje 1**
+**Kocaeli Universitesi — Teknoloji Fakultesi — Bilisim Sistemleri Muhendisligi**  
+**Yazilim Gelistirme Laboratuvari II — Proje 1**
 
 | | |
 |---|---|
 | **Proje Adi** | Mikroservis Tabanli E-Ticaret Sistemi |
-| **Ekip Uyeleri** | Efekannnn (Gelistirici 1 â Dispatcher + Product Service), Kerem Unal (Gelistirici 2 â Auth + Order Service) |
+| **Ekip Uyeleri** | Efekannnn (Gelistirici 1 — Dispatcher + Product Service), Kerem Unal (Gelistirici 2 — Auth + Order Service) |
 | **Tarih** | Nisan 2026 |
 | **Branch** | `integration` |
 
@@ -79,8 +79,8 @@ graph TB
 | Auth Service | 3001 | Kullanici kaydi, giris, token uretimi | auth-db |
 | Product Service | 3002 | Urun CRUD islemleri | product-db |
 | Order Service | 3003 | Siparis olusturma ve yonetimi | order-db |
-| Prometheus | 9090 | Metrik toplama | â |
-| Grafana | 3006 | Gorsellestirrme | â |
+| Prometheus | 9090 | Metrik toplama | - |
+| Grafana | 3006 | Gorsellestirme | - |
 
 ---
 
@@ -143,7 +143,7 @@ graph LR
 
 ### 3.4 TDD Uygulamasi
 
-Dispatcher **once testler yazilarak** gelistirildi (Red â Green â Refactor):
+Dispatcher **once testler yazilarak** gelistirildi (Red → Green → Refactor):
 
 ```mermaid
 graph LR
@@ -164,7 +164,6 @@ graph LR
 | `auth-flow.integration.test.ts` | Tam auth akisi |
 | `proxy.integration.test.ts` | Proxy entegrasyon |
 
-<!-- BURAYA: dispatcher npm test ciktisinin ekran goruntusunu koy -->
 ![Dispatcher Test Sonuclari](docs/images/dispatcher-test.png)
 
 ---
@@ -175,41 +174,35 @@ graph LR
 
 **Sorumluluk:** Kullanici kaydi, giris, JWT uretimi ve dogrulama.
 
-<!-- BURAYA: auth-service sinif diyagrami gorseli (mermaid.live export) -->
 ![Auth Sinif Diyagrami](docs/images/auth-service-class-diagram%20(2).png)
 
-<!-- BURAYA: auth-service npm test ciktisinin ekran goruntusunu koy -->
 ![Auth Test Sonuclari](docs/images/auth-service-test.png)
 
 ### 4.2 Product Service
 
 **Sorumluluk:** Urun listeleme, ekleme, guncelleme, silme.
 
-<!-- BURAYA: product-service sinif diyagrami gorseli (mermaid.live export) -->
 ![Product Sinif Diyagrami](docs/images/product-service-class-diagram.png)
 
-<!-- BURAYA: product-service npm test ciktisinin ekran goruntusunu koy -->
 ![Product Test Sonuclari](docs/images/product-test.png)
 
 ### 4.3 Order Service
 
 **Sorumluluk:** Siparis olusturma, listeleme, durum guncelleme.
 
-<!-- BURAYA: order-service sinif diyagrami gorseli (mermaid.live export) -->
 ![Order Sinif Diyagrami](docs/images/order-service-class-diagram%20(2).png)
 
-<!-- BURAYA: order-service npm test ciktisinin ekran goruntusunu koy -->
 ![Order Test Sonuclari](docs/images/order-service-test.png)
 
 ### 4.4 Tum Servis Test Ozeti
 
 | Servis | Test Suites | Testler | Gecti | Kaldi | Kapsam |
 |---|---|---|---|---|---|
-| Dispatcher | 7 | 89 | 89 â | 0 | â |
-| Product Service | 3 | 37 | 37 â | 0 | â |
-| Auth Service | 3 | 30 | 30 â | 0 | %86.48 |
-| Order Service | 3 | â | â | 0 | â |
-| **Toplam** | **16** | **156+** | **â** | **0** | â |
+| Dispatcher | 7 | 89 | 89 ✓ | 0 | - |
+| Product Service | 3 | 37 | 37 ✓ | 0 | - |
+| Auth Service | 3 | 30 | 30 ✓ | 0 | %86.48 |
+| Order Service | 3 | - | - | 0 | - |
+| **Toplam** | **16** | **156+** | **✓** | **0** | - |
 
 ---
 
@@ -233,15 +226,15 @@ graph TD
 
 | Method | Endpoint | Auth | Aciklama |
 |---|---|---|---|
-| POST | /register | â | Kullanici olustur, token don |
-| POST | /login | â | Giris yap, token don |
+| POST | /register | - | Kullanici olustur, token don |
+| POST | /login | - | Giris yap, token don |
 
 **Products** (`/api/products`)
 
 | Method | Endpoint | Auth | Aciklama |
 |---|---|---|---|
-| GET | / | â | Urun listesi |
-| GET | /:id | â | Urun detayi |
+| GET | / | - | Urun listesi |
+| GET | /:id | - | Urun detayi |
 | POST | / | User | Urun ekle |
 | PUT | /:id | User | Urun guncelle |
 | DELETE | /:id | User | Urun sil |
@@ -262,84 +255,25 @@ graph TD
 
 ### Kayit ve Giris Akisi
 
-<!-- BURAYA: register-login sequence diyagrami gorseli (mermaid.live export) -->
 ![Register Login Sequence](docs/images/register-login-sequence.png)
 
 ### Siparis Akisi
 
-<!-- BURAYA: siparis sequence diyagrami gorseli (mermaid.live export) -->
 ![Siparis Sequence](docs/images/siparis-sequence.png)
 
 ### Urun CRUD Akisi
 
-<!-- BURAYA: urun CRUD sequence diyagrami gorseli (mermaid.live export) -->
 ![Urun CRUD Sequence](docs/images/urun-CRUD-sequence.png)
 
 ### Hata Durumu Akisi
 
-<!-- BURAYA: hata senaryolari sequence diyagrami gorseli (mermaid.live export) -->
 ![Hata Sequence](docs/images/hata-sequence.png)
 
 ---
 
 ## 7. Veritabani (ER Diyagrami)
 
-<!-- BURAYA: E-R diyagrami gorseli (mermaid.live erDiagram export) -->
 ![ER Diyagrami](docs/images/E-Rdiagram.png)
-
-```mermaid
-erDiagram
-    USER {
-        string id PK
-        string email UK
-        string password
-        string role
-        date createdAt
-        date updatedAt
-    }
-    PRODUCT {
-        string id PK
-        string name
-        string description
-        number price
-        number stock
-        string category
-        date createdAt
-        date updatedAt
-    }
-    ORDER {
-        string id PK
-        string userId FK
-        string userEmail
-        string status
-        number totalPrice
-        date createdAt
-        date updatedAt
-    }
-    ORDER_ITEM {
-        string productId FK
-        number quantity
-        number price
-    }
-    LOG {
-        string id PK
-        string method
-        string path
-        number statusCode
-        number responseTime
-        string userId FK
-        string userEmail
-        string targetService
-        string level
-        string message
-        date timestamp
-    }
-
-    USER ||--o{ ORDER : "olusturur"
-    ORDER ||--|{ ORDER_ITEM : "icerir"
-    PRODUCT ||--o{ ORDER_ITEM : "referans alinir"
-    USER ||--o{ LOG : "istekte bulunur"
-```
 
 **Her servisin veritabani tamamen izoledir:**
 
@@ -356,11 +290,11 @@ erDiagram
 
 | Prensip | Uygulama |
 |---|---|
-| **S** â Tek Sorumluluk | Auth yalnizca kimlik, Order yalnizca sipariÅ, Product yalnizca urun yonetir |
-| **O** â Acik/Kapali | Yeni servis eklemek mevcut middleware'i degistirmez |
-| **L** â Liskov | `IAuthService`, `IOrderService`, `IProductService` arayuzleri implementasyonla degistirilebilir |
-| **I** â Arayuz Ayirimi | Her servis yalnizca kendi minimal arayuzune baglidir |
-| **D** â Bagimlilik Tersine Cevirme | Servis URL'leri env'den okunur, hard-code yoktur |
+| **S** — Tek Sorumluluk | Auth yalnizca kimlik, Order yalnizca siparis, Product yalnizca urun yonetir |
+| **O** — Acik/Kapali | Yeni servis eklemek mevcut middleware'i degistirmez |
+| **L** — Liskov | `IAuthService`, `IOrderService`, `IProductService` arayuzleri implementasyonla degistirilebilir |
+| **I** — Arayuz Ayirimi | Her servis yalnizca kendi minimal arayuzune baglidir |
+| **D** — Bagimlilik Tersine Cevirme | Servis URL'leri env'den okunur, hard-code yoktur |
 
 ---
 
@@ -415,11 +349,11 @@ graph TB
     HOST -->|ECONNREFUSED| OS
 ```
 
-Auth, Product ve Order servisleri `ports:` tanimi olmadigi icin host makineden **dogrudan erisilemez**. Yalnizca Dispatcher uzerinden ulasÄ±labilir.
+Auth, Product ve Order servisleri `ports:` tanimi olmadigi icin host makineden **dogrudan erisilemez**. Yalnizca Dispatcher uzerinden ulasılabilir.
 
 ---
 
-## 10. Izleme â Prometheus & Grafana
+## 10. Izleme — Prometheus & Grafana
 
 ![Prometheus Targets](docs/images/prometheus.png)
 
@@ -428,7 +362,7 @@ Auth, Product ve Order servisleri `ports:` tanimi olmadigi icin host makineden *
 | Metrik | Tip | Aciklama |
 |---|---|---|
 | `http_requests_total` | Counter | Toplam HTTP istegi (method/route/status_code) |
-| `http_request_duration_seconds` | Histogram | Yanik suresi â p50/p95/p99 |
+| `http_request_duration_seconds` | Histogram | Yakit suresi — p50/p95/p99 |
 | `dispatcher_nodejs_heap_size_used_bytes` | Gauge | Node.js heap bellek |
 | `dispatcher_process_cpu_seconds_total` | Counter | CPU kullanimi |
 
@@ -465,26 +399,26 @@ graph LR
 
 ### Smoke Test Sonuclari
 
-> 5 sanal kullanici, 30 saniye â temel calisabilirlik dogrulamasi
+> 5 sanal kullanici, 30 saniye — temel calisabilirlik dogrulamasi
 
 ![Smoke Test](docs/images/smoke-test.png)
 
 | Metrik | Deger | Esik | Sonuc |
 |---|---|---|---|
-| Toplam Istek | 452 | â | â |
-| Istek/saniye | 14.78 req/s | â | â |
-| Ortalama Yanit | 5.37 ms | â | â |
+| Toplam Istek | 452 | - | - |
+| Istek/saniye | 14.78 req/s | - | - |
+| Ortalama Yanit | 5.37 ms | - | - |
 | p95 Yanit Suresi | **12.03 ms** | < 500 ms | **GECTI** |
 | Hata Orani | **0.22%** | < 10% | **GECTI** |
-| Health Check | 150/150 | â | **GECTI** |
-| Products 200 | 150/150 | â | **GECTI** |
-| Orders 200 | 150/150 | â | **GECTI** |
+| Health Check | 150/150 | - | **GECTI** |
+| Products 200 | 150/150 | - | **GECTI** |
+| Orders 200 | 150/150 | - | **GECTI** |
 
 ---
 
 ### Load Test Sonuclari
 
-> 0 â 200 sanal kullanici, ~3.5 dakika â normal yuk altinda performans
+> 0 → 200 sanal kullanici, ~3.5 dakika — normal yuk altinda performans
 
 ![Load Test](docs/images/load-test.png)
 
@@ -492,14 +426,14 @@ graph LR
 
 | Metrik | Deger | Esik | Sonuc |
 |---|---|---|---|
-| Toplam Istek | 9,980 | â | â |
-| Istek/saniye | 46.47 req/s | â | â |
-| Ortalama Yanit | 1,945 ms | â | â |
+| Toplam Istek | 9,980 | - | - |
+| Istek/saniye | 46.47 req/s | - | - |
+| Ortalama Yanit | 1,945 ms | - | - |
 | p95 Yanit Suresi | **10,002 ms** | < 1,000 ms | **KALDI** |
 | Hata Orani | **7.31%** | < 5% | **KALDI** |
-| Products 200 | 3,326/3,326 | â | **GECTI** |
-| Order Olustur 201 | 3,006/3,326 (320 hata) | â | Kismi |
-| Orders Listele 200 | 2,917/3,326 (409 hata) | â | Kismi |
+| Products 200 | 3,326/3,326 | - | **GECTI** |
+| Order Olustur 201 | 3,006/3,326 (320 hata) | - | Kismi |
+| Orders Listele 200 | 2,917/3,326 (409 hata) | - | Kismi |
 
 > **Not:** Hatalar veritabaninda birikmis veri ve siparis sorgularindaki pagination eksikliginden kaynaklanmistir. `OrderModel.find().limit(50)` ile duzeltilmistir.
 
@@ -507,7 +441,7 @@ graph LR
 
 ### Stress Test Sonuclari
 
-> 0 â 500 sanal kullanici, ~4 dakika â sistemin sinir noktasini bulmak
+> 0 → 500 sanal kullanici, ~4 dakika — sistemin sinir noktasini bulmak
 
 ![Stress Test 320 VU](docs/images/stress-test-320.png)
 
@@ -517,9 +451,9 @@ graph LR
 
 | Metrik | Deger | Esik | Sonuc |
 |---|---|---|---|
-| Toplam Istek | 131,879 | â | â |
-| Istek/saniye | 548.52 req/s | â | â |
-| Ortalama Yanit | 11.94 ms | â | â |
+| Toplam Istek | 131,879 | - | - |
+| Istek/saniye | 548.52 req/s | - | - |
+| Ortalama Yanit | 11.94 ms | - | - |
 | p95 Yanit Suresi | **64.17 ms** | < 2,000 ms | **GECTI** |
 | Hata Orani | **~99.9%** | < 10% | **KALDI** |
 
@@ -544,23 +478,21 @@ graph LR
 - Docker ile tek komutta tam sistem kurulumu (`docker compose up --build -d`)
 - Dispatcher TDD ile gelistirildi, 7 birim + 2 entegrasyon testi
 - JWT + RBAC merkezi yetkilendirme sistemi calisir durumda
-- Prometheus metrikleri her servisten basariyla toplanÄ±yor
+- Prometheus metrikleri her servisten basariyla toplaniyor
 - Smoke test %100 basari ile tamamlandi
 
 ### Sinirliliklar
 
 - Load testinde DB pagination eksikligi hata oranini artirdi (duzeltildi: `.limit(50)`)
-- Stress testinde rate limiter 500 VU icin cok kucuk kaldi
-- Order servisinde items alani DB'de gÃ¶mÃ¼lÃ¼ saklandigi iÃ§in cross-servis JOIN sorgusu yapilamiyor
-- Stress testinde rate limiter 500 VU icin cok kucuk kaldi (RATE_LIMIT_MAX arttirilabilir)
+- Stress testinde rate limiter 500 VU icin yetersiz kaldi (RATE_LIMIT_MAX arttirilabilir)
+- Order servisinde items alani DB'de gomulu saklandigi icin cross-servis JOIN sorgusu yapilamiyor
 
 ### Olasi Gelistirmeler
 
 - Redis ile dagitik rate limiting (cok instance senaryosu icin)
-- Swagger/OpenAPI otomatik dokumantasyonu
 - Swagger/OpenAPI dokumantasyonu
 - CI/CD pipeline (GitHub Actions)
-- Horizontal scaling â birden fazla Order Service instance
+- Horizontal scaling — birden fazla Order Service instance
 
 ---
 
@@ -575,7 +507,7 @@ cd yazlab2
 cp .env.example .env
 # .env icinde JWT_SECRET degerini guncelle
 
-# 3. Tum servisleri basalat
+# 3. Tum servisleri basalt
 docker compose up --build -d
 
 # 4. Saglik kontrolu
