@@ -1,0 +1,195 @@
+version: '3.9'
+
+networks:
+  frontend-network:
+    driver: bridge
+  backend-network:
+    driver: bridge
+
+services:
+  # ── Dispatcher (API Gateway) ──────────────────────────────────────────────
+  dispatcher:
+    build:
+      context: ./dispatcher
+      target: production
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      DISPATCHER_PORT: 3000
+      JWT_SECRET: ${JWT_SECRET}
+      AUTH_SERVICE_URL: http://auth-service:3001
+      PRODUCT_SERVICE_URL: http://product-service:3002
+      ORDER_SERVICE_URL: http://order-service:3003
+      DISPATCHER_MONGO_URI: mongodb://dispatcher-db:27017/dispatcher_db
+      RATE_LIMIT_MAX: "10000"
+    depends_on:
+      dispatcher-db:
+        condition: service_healthy
+    networks:
+      - frontend-network
+      - backend-network
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+    restart: unless-stopped
+
+  # ── Auth Service ──────────────────────────────────────────────────────────
+  auth-service:
+    build:
+      context: ./auth-service
+      target: production
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      JWT_SECRET: ${JWT_SECRET}
+      MONGODB_URI: mongodb://auth-db:27017/auth_db
+    depends_on:
+      auth-db:
+        condition: service_healthy
+    networks:
+      - backend-network
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+    restart: unless-stopped
+
+  # ── Product Service ───────────────────────────────────────────────────────
+  product-service:
+    build:
+      context: ./product-service
+      target: production
+    environment:
+      NODE_ENV: production
+      PORT: 3002
+      MONGO_URI: mongodb://product-db:27017/product_db
+    depends_on:
+      product-db:
+        condition: service_healthy
+    networks:
+      - backend-network
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3002/api/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+    restart: unless-stopped
+
+  # ── Order Service ─────────────────────────────────────────────────────────
+  order-service:
+    build:
+      context: ./order-service
+      target: production
+    environment:
+      NODE_ENV: production
+      PORT: 3003
+      MONGODB_URI: mongodb://order-db:27017/order_db
+    depends_on:
+      order-db:
+        condition: service_healthy
+    networks:
+      - backend-network
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3003/api/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+    restart: unless-stopped
+
+  # ── Monitoring ───────────────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - backend-network
+      - frontend-network
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3006:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      - prometheus
+    networks:
+      - frontend-network
+    restart: unless-stopped
+
+  # ── MongoDB Instances (izole) ─────────────────────────────────────────────
+  dispatcher-db:
+    image: mongo:7-jammy
+    volumes:
+      - dispatcher-db-data:/data/db
+    networks:
+      - backend-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 15s
+      timeout: 5s
+      start_period: 10s
+      retries: 5
+    restart: unless-stopped
+
+  auth-db:
+    image: mongo:7-jammy
+    volumes:
+      - auth-db-data:/data/db
+    networks:
+      - backend-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 15s
+      timeout: 5s
+      start_period: 10s
+      retries: 5
+    restart: unless-stopped
+
+  product-db:
+    image: mongo:7-jammy
+    volumes:
+      - product-db-data:/data/db
+    networks:
+      - backend-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 15s
+      timeout: 5s
+      start_period: 10s
+      retries: 5
+    restart: unless-stopped
+
+  order-db:
+    image: mongo:7-jammy
+    volumes:
+      - order-db-data:/data/db
+    networks:
+      - backend-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 15s
+      timeout: 5s
+      start_period: 10s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  dispatcher-db-data:
+  auth-db-data:
+  product-db-data:
+  order-db-data:
