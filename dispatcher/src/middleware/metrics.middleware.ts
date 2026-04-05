@@ -1,12 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import client from 'prom-client';
 
+// Toplam HTTP istek sayısını method, route ve status_code etiketleriyle sayar
 export const httpRequestsTotal = new client.Counter({
   name: 'http_requests_total',
   help: 'Total number of HTTP requests',
   labelNames: ['method', 'route', 'status_code'],
 });
 
+// Her isteğin yanıt süresini saniye cinsinden ölçer
 export const httpRequestDurationSeconds = new client.Histogram({
   name: 'http_request_duration_seconds',
   help: 'HTTP request duration in seconds',
@@ -18,6 +20,7 @@ export function createMetricsMiddleware() {
   return (req: Request, res: Response, next: NextFunction): void => {
     const start = Date.now();
 
+    // Yanıt tamamlandığında Prometheus metriklerini güncelle
     res.on('finish', () => {
       const duration = (Date.now() - start) / 1000;
       const route = req.path || '/';

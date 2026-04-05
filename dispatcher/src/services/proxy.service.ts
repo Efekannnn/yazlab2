@@ -3,15 +3,18 @@ import axios from 'axios';
 import { IProxyService, ServiceTarget, ProxyResult } from '../interfaces/IProxyService';
 import { config } from '../config';
 
+// Axios'un fırlattığı hata nesnesinin tip tanımı
 interface AxiosLikeError {
   response?: { status: number; data: unknown };
   code?: string;
 }
 
 export class ProxyService implements IProxyService {
+  // Path prefix'ine göre hedef servisi belirleyen yönlendirme tablosu
   private routeMap: { prefix: string; target: ServiceTarget }[];
 
   constructor() {
+    // /api/logs istekleri auth-service üzerinden karşılanır
     this.routeMap = [
       { prefix: '/api/auth', target: config.services.auth },
       { prefix: '/api/logs', target: config.services.auth },
@@ -34,6 +37,7 @@ export class ProxyService implements IProxyService {
     const url = `${targetService.url}${req.path}`;
 
     const headers: Record<string, string> = {};
+    // Yalnızca bu header'lar downstream'e iletilir
     const forwardHeaders = ['content-type', 'x-user-id', 'x-user-email', 'x-user-role'];
 
     for (const key of forwardHeaders) {
@@ -49,7 +53,7 @@ export class ProxyService implements IProxyService {
         headers,
         data: req.body,
         params: req.query,
-        timeout: 10000,
+        timeout: 10000, // 10 saniye zaman aşımı
       });
 
       return {
@@ -59,16 +63,19 @@ export class ProxyService implements IProxyService {
       };
     } catch (error: unknown) {
       const axiosError = error as AxiosLikeError;
+      // Downstream hata döndürdüyse status ve datayı olduğu gibi ilet
       if (axiosError.response) {
         return {
           status: axiosError.response.status,
           data: axiosError.response.data,
         };
       }
+      // Bağlantı kurulamadıysa hata fırlat (error-handler 503 döndürür)
       throw new Error(`Service unreachable: ${targetService.name}`);
     }
   }
 
+  // Servisin /health endpoint'ine istek atarak ayakta olup olmadığını kontrol eder
   async checkHealth(service: ServiceTarget): Promise<boolean> {
     try {
       const response = await axios.get(`${service.url}${service.healthEndpoint}`, {

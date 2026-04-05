@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
+// .env dosyasını proje kökünden yükle
 dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
 export const config = {
@@ -9,10 +10,12 @@ export const config = {
   logLevel: process.env.LOG_LEVEL || 'info',
 
   jwt: {
+    // Üretim ortamında mutlaka .env ile değiştirilmeli
     secret: process.env.JWT_SECRET || 'default-secret-change-me',
     expiresIn: process.env.JWT_EXPIRES_IN || '1h',
   },
 
+  // Downstream servis URL'leri — docker-compose'da env ile override edilir
   services: {
     auth: {
       name: 'auth-service',
@@ -31,12 +34,13 @@ export const config = {
     },
   },
 
+  // Log kayıtları için ayrı MongoDB veritabanı
   mongo: {
     uri: process.env.DISPATCHER_MONGO_URI || 'mongodb://localhost:27017/dispatcher_db',
   },
 
   rateLimit: {
-    windowMs: 15 * 60 * 1000,
+    windowMs: 15 * 60 * 1000, // 15 dakikalık pencere
     max: parseInt(process.env.RATE_LIMIT_MAX || '1000', 10),
   },
 } as const;

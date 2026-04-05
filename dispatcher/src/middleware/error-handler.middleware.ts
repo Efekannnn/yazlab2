@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../interfaces/IErrorHandler';
 
+// Ağ bağlantı hatalarını temsil eden hata kodları
 const NETWORK_ERROR_CODES = new Set(['ECONNREFUSED', 'ETIMEDOUT', 'ECONNRESET', 'EHOSTUNREACH']);
 
 export function errorHandler(
@@ -9,14 +10,17 @@ export function errorHandler(
   res: Response,
   _next: NextFunction
 ): void {
+  // Downstream servise ulaşılamıyorsa 503 döndür
   if (err.code && NETWORK_ERROR_CODES.has(err.code)) {
     res.status(503).json({ error: { code: 'SERVICE_UNAVAILABLE', message: 'Downstream service is unavailable' } });
     return;
   }
 
+  // Geçerli bir 4xx/5xx status yoksa 500 kullan
   const status = err.status && err.status >= 400 && err.status !== 200 ? err.status : 500;
 
   if (status >= 500) {
+    // Bilinen hata kodu varsa olduğu gibi döndür, yoksa stack trace'i gizle
     if (err.code && err.status && err.status !== 500) {
       res.status(status).json({ error: { code: err.code, message: err.message ?? 'Service error' } });
       return;
@@ -25,6 +29,7 @@ export function errorHandler(
     return;
   }
 
+  // 4xx hataları hata kodu ve mesajıyla birlikte döndür
   res.status(status).json({
     error: {
       code: err.code ?? 'ERROR',

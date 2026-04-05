@@ -7,14 +7,17 @@ import { AuthService } from '../services/auth.service';
  * Geçerli token'daki payload, downstream'e x-user-* header'ları ile iletilir.
  */
 export function createAuthMiddleware(secret: string) {
+  // JWT doğrulama ve route kontrolleri için AuthService örneği oluştur
   const authService = new AuthService(secret);
 
   return (req: Request, res: Response, next: NextFunction): void => {
+    // Public route ise kimlik doğrulama gerekmez, doğrudan geç
     if (authService.isPublicRoute(req.method, req.path)) {
       next();
       return;
     }
 
+    // Authorization header'ından Bearer token'ı çıkar
     const token = authService.extractToken(req.headers.authorization);
 
     if (!token) {
@@ -24,6 +27,7 @@ export function createAuthMiddleware(secret: string) {
       return;
     }
 
+    // Token'ı doğrula ve payload'ı al
     const result = authService.verifyToken(token);
 
     if (!result.valid || !result.payload) {
@@ -33,6 +37,7 @@ export function createAuthMiddleware(secret: string) {
       return;
     }
 
+    // Admin route'u için rol kontrolü yap
     if (authService.isAdminRoute(req.method, req.path) && result.payload.role !== 'admin') {
       res.status(403).json({
         error: { code: 'FORBIDDEN', message: 'Bu islem icin admin yetkisi gerekli' },
@@ -40,6 +45,7 @@ export function createAuthMiddleware(secret: string) {
       return;
     }
 
+    // Kullanıcı bilgilerini downstream servislere header ile ilet
     (req as unknown as { user: typeof result.payload }).user = result.payload;
     req.headers['x-user-id'] = result.payload.sub;
     req.headers['x-user-email'] = result.payload.email;
