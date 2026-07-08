@@ -518,11 +518,3 @@ k6 run load-tests/scripts/smoke-test.js
 k6 run load-tests/scripts/load-test.js
 k6 run load-tests/scripts/stress-test.js
 ```
-
-### Servis URL'leri
-
-| Servis | URL |
-|---|---|
-| API Gateway | http://localhost:3000 |
-| Prometheus | http://localhost:9090 |
-| Grafana | http://localhost:3006 (admin/admin) |
